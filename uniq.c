@@ -18,13 +18,12 @@ int main()
             if (first_line)
             {
                 first_line = false;
-                printf("Uniq command is geing executed in user mode.\n");
+                printf("Uniq command is geting executed in user mode.\n");
             }
             printf("%s", curr_line);
             strcpy(prev_line, curr_line);
         }
     }
-
     fclose(file);
     return 0;
 }
