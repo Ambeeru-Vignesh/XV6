@@ -1,29 +1,64 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
+#include "types.h"
+#include "user.h"
 
-int main()
+int main(int argc, char *argv[])
 {
-    FILE *file = fopen("demo.txt", "r");
+    if (argc != 2)
+    {
+        printf(2, "Usage: %s <filename>\n", argv[0]);
+        exit();
+    }
 
+    char *filename = argv[1];
+    int file = open(filename, 0);
+
+    if (argc == 3 && (strcmp(argv[1] == 'd') || strcmp(argv[1] == 'i') || strcmp(argv[1] == 'd')))
+    {
+        filename = argv[2];
+    }
+    else
+    {
+        filename = argv[1];
+    }
+
+    if (file < 0)
+    {
+        printf(2, "Error: Unable to open file %s\n", filename);
+        exit();
+    }
+
+    char currentChar;
     char curr_line[256];
     char prev_line[256] = "";
-    bool first_line = true;
+    int lineNo = 0;
+    int firstIndex = 0;
 
-    while (fgets(curr_line, sizeof(curr_line), file) != NULL)
+    while (read(file, &currentChar, 1) > 0)
     {
-        if (strcmp(curr_line, prev_line) != 0)
+
+        if (firstIndex == 0)
         {
-            if (first_line)
+            printf(1, "Uniq command is getting executed in user mode.\n");
+            firstIndex = 1;
+        }
+        if (currentChar == '\n')
+        {
+            curr_line[lineNo] = '\0';
+
+            if (strcmp(curr_line, prev_line) != 0)
             {
-                first_line = false;
-                printf("Uniq command is geting executed in user mode.\n");
+                printf(1, "%s\n", curr_line);
+                strcpy(prev_line, curr_line);
             }
-            printf("%s", curr_line);
-            strcpy(prev_line, curr_line);
+
+            lineNo = 0;
+        }
+        else
+        {
+            curr_line[lineNo++] = currentChar;
         }
     }
-    fclose(file);
-    return 0;
+
+    close(file);
+    exit();
 }
