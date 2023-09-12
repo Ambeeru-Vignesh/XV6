@@ -85,10 +85,14 @@ To use the `head` program, you can execute the following commands:
 $ head example2.txt
 ```
 
+![head example2.txt](<images/head example2.txt.png>)
+
 - To specify the number of lines (e.g., 5) to display from `example.txt`:
 
 ```shell
-$ head -n 5 example.txt
+$ head -n 5 example2.txt
 ```
+
+![head -n 5 example2.txt](<images/head -n.png>)
 
 This project demonstrates the implementation of the `head` command in both user and kernel modes in the xv6 operating system, providing a useful tool for viewing the top N lines of a file or standard input.
