@@ -18,29 +18,14 @@ In the user space, we will create a `head.c` program that replicates the functio
 #include "types.h"
 #include "user.h"
 
-int main(int argc, char *argv[])
+void head(char *filename, int lines)
 {
-    int lines = 14;
-
-    if (argc >= 2 && strcmp(argv[1], "-n") == 0)
-    {
-        lines = atoi(argv[2]);
-        argv += 2;
-        argc -= 2;
-    }
-    else if (argc != 2)
-    {
-        printf(2, "Usage: %s [-n numLines] <filename>\n", argv[0]);
-        exit();
-    }
-
-    char *filename = argv[argc - 1];
     int file = open(filename, 0);
 
     if (file < 0)
     {
         printf(2, "Error: Unable to open file %s\n", filename);
-        exit();
+        return;
     }
 
     char currentChar;
@@ -57,6 +42,7 @@ int main(int argc, char *argv[])
             printf(1, "Head command is getting executed in user mode.\n");
             firstIndex = 1;
         }
+
         if (currentChar == '\n')
         {
             curr_line[lineNo] = '\0';
@@ -71,6 +57,40 @@ int main(int argc, char *argv[])
     }
 
     close(file);
+}
+
+int main(int argc, char *argv[])
+{
+    int lines = 14;
+
+    if (argc >= 2 && strcmp(argv[1], "-n") == 0)
+    {
+        if (argc < 4)
+        {
+            printf(2, "Usage: %s [-n numLines] <filename1> [<filename2> ...]\n", argv[0]);
+            exit();
+        }
+
+        lines = atoi(argv[2]);
+        argv += 3;
+        argc -= 3;
+    }
+    else if (argc < 2)
+    {
+        printf(2, "Usage: %s [-n numLines] <filename1> [<filename2> ...]\n", argv[0]);
+        exit();
+    }
+    else
+    {
+        argv++;
+        argc--;
+    }
+
+    for (int i = 0; i < argc; i++)
+    {
+        head(argv[i], lines);
+    }
+
     exit();
 }
 ```
@@ -94,5 +114,21 @@ $ head -n 5 example2.txt
 ```
 
 ![head -n 5 example2.txt](<images/head -n.png>)
+
+- To display the first 14 lines of `example2.txt` and `example3.txt`:
+
+```shell
+$ head example2.txt example3.txt
+```
+
+![head example2.txt example3.txt](<images/head multifiles.png>)
+
+- To specify the number of lines (e.g., 5) to display from `example2.txt` and `example3.txt`:
+
+```shell
+$ head -n 5 example2.txt example3.txt
+```
+
+![head -n 5 example2.txt example3.txt](<images/head -n multifiles.png>)
 
 This project demonstrates the implementation of the `head` command in both user and kernel modes in the xv6 operating system, providing a useful tool for viewing the top N lines of a file or standard input.
