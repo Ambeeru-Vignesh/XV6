@@ -1,17 +1,16 @@
 #include "types.h"
 #include "user.h"
 
-void head(char *filename, int lines)
+void head(char *filename,int lines)
 {
-    int file = open(filename, 0);
-    char buffer[1024];
+    int file = open(filename,0);
+    char buffer[512];
 
     if (file < 0)
     {
-        printf(2, "Error: Unable to open file %s\n", filename);
+        printf(2,"Error: Unable to open file %s\n",filename);
         return;
     }
-    // char *filename = "example.txt";
 
     int n = read(file, buffer, sizeof(buffer));
 
@@ -26,44 +25,32 @@ void head(char *filename, int lines)
     }
     else
     {
-        printf(1, "Head command is getting executed in user mode.\n");
+        printf(1,"Head command is getting executed in kernel mode\n");
         head1(buffer, lines);
+        close(file);
     }
-    close(file);
-    exit();
 }
 
 int main(int argc, char *argv[])
 {
 
-    int lines = 14;
-    if (argc >= 2 && strcmp(argv[1], "-n") == 0)
+    int lines = 14, k = 1;
+    char *textFile;
+    if (argc > 2 && strcmp(argv[1], "-n") == 0)
     {
-        if (argc < 4)
-        {
-            printf(2, "Usage: %s [-n numLines] <filename1> [<filename2> ...]\n", argv[0]);
-            exit();
-        }
-
+        k = 3;
         lines = atoi(argv[2]);
-        argv += 3;
-        argc -= 3;
     }
     else if (argc < 2)
     {
         printf(2, "Usage: %s [-n numLines] <filename1> [<filename2> ...]\n", argv[0]);
         exit();
     }
-    else
-    {
-        argv++;
-        argc--;
-    }
 
-    for (int i = 0; i < argc; i++)
+    for (int i = k; i < argc; i++)
     {
-        head(argv[i], lines);
+        textFile = argv[i];
+        head(textFile, lines);
     }
-
     exit();
 }
