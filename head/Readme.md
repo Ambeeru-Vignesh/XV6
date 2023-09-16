@@ -132,3 +132,4 @@ $ head -n 5 example2.txt example3.txt
 ![head -n 5 example2.txt example3.txt](<images/head -n multifiles.png>)
 
 This project demonstrates the implementation of the `head` command in both user and kernel modes in the xv6 operating system, providing a useful tool for viewing the top N lines of a file or standard input.
+
